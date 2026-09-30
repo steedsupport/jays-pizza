@@ -70,11 +70,15 @@ assets in /assets/). Tech stack: GSAP 3 + ScrollTrigger, Lenis smooth scroll, pl
    rgba(26,18,11,0.45) bg, 1px rgba(245,233,215,0.18) border, backdrop-filter blur(14px),
    border-radius 20px), and an end-card (final section only) with "Order Now" CTA + address/phone line.
 
-2. CANVAS SCRUB LOGIC: 4 sequences; seq N's frames live at /assets/seq-[N]/seq[N]-[###].jpg
-   (3-digit zero-padded, e.g. /assets/seq-1/seq1-001.jpg … seq1-160.jpg). Preload seq-1 fully before
-   reveal (show a branded loader with % ). Lazily preload seq 2,3,4 in background (priority order,
-   sequential batches of 12 via fetch+Image; keep an LRU cap of 220 decoded Image objects, evict the
-   previous sequence after transition). Extracted frame rate is 16fps → 160 frames per 10s video.
+2. CANVAS SCRUB LOGIC: 4 sequences; two frame tiers ship per sequence — desktop tier at
+   /assets/seq-[N]/seq[N]-[###].jpg (1600px wide, JPEG quality 90, hard cap 1MB per frame) and mobile
+   tier at /assets/seq-[N]-m/seq[N]-[###].jpg (900px wide, JPEG quality 88, <=600KB), filenames 3-digit
+   zero-padded; the page picks the tier once at load by viewport (window.innerWidth < 768 -> mobile tier)
+   and never swaps mid-scroll. Each tier holds 240 frames per sequence (24fps extraction from a 10s
+   master; scroll gap between frames = 1/24s ≈ 41.7ms of footage — the on-screen scroll distance for
+   one frame step is maxScroll/960). Preload seq-1 fully before reveal (show a branded loader with %).
+   Lazily preload seq 2,3,4 in background (priority order, sequential batches of 12 via fetch+Image;
+   keep an LRU cap of 320 decoded Image objects, evict the previous sequence after transition).
    Scroll mapping: global progress p = scrollY / maxScroll in [0,1]. Section s = floor(p*4) clamped 0..3.
    Local t = (p*4 - s) in [0,1]; frame index = round(t * (framesInSeq - 1)) + 1. Draw current frame
    cover-fit (like background-size:cover) into canvas with devicePixelRatio cap 2. Use one rAF loop;
@@ -89,20 +93,54 @@ assets in /assets/). Tech stack: GSAP 3 + ScrollTrigger, Lenis smooth scroll, pl
    keep pinned canvas, swap to 0.5 resolution frames under 768px width.
 
 4. BEHAVIOR: Lenis (lerp 0.09) + GSAP ScrollTrigger scrub:1 driving a single onUpdate(progress) ->
-   sequencer.setProgress(p). Headline blocks: each pinned at its scroll window with y-translate + opacity
-   tweens. End card: pin at 85-100% with scale 0.96->1 reveal. Sound toggle (top-right, off by default)
-   plays per-section ambient loop. Reduced-motion prefers-reduced-motion: fall back to still keyframe
-   per section + captions. No layout shift; LCP is the seq-1 first frame; preload it via <link rel=preload>
-   as image. Add console-safe frame-miss guard: if an image index 404s, hold the last decoded frame.
+   sequencer.setProgress(p). Headline blocks: each fades/slides in-out at its own scroll window with
+   y-translate + opacity tweens. End card: pin at 85-100% with scale 0.96->1 reveal. Sound toggle
+   (top-right, off by default) plays per-section ambient loop. Reduced-motion prefers-reduced-motion:
+   fall back to still keyframe per section + captions. No layout shift; LCP is the seq-1 first frame;
+   preload it via <link rel=preload> as image. Add console-safe frame-miss guard: if an image index
+   404s, hold the last decoded frame.
 
 Return complete production-ready code, no placeholders, comment the scroll->frame math in English.
 ```
 
----
+## VIDEO PROMPTS — FINAL CINEMATIC CUT (Veo 3.1 via VicSee MCP, 10s, zero cuts)
+
+Universal prefix on every prompt: "Single continuous unbroken shot, zero camera cuts, no jump cuts,
+no editing cuts of any kind; one smooth constant-speed camera move on a fixed physical path; the same
+kitchen, same pizza, same lighting from first frame to last; photoreal cinematic food-film grade,
+24fps motion feel; native synchronized ambient sound."
+
+V1 THE BLOOM (first frame = K1): slow steady push-in from 85mm distance toward the hands as they
+stretch the dough round on the dark oak counter; flour dust drifts through the dawn light beams; the
+dough visibly widens and breathes with each press and turn; ends on the rested dough round glowing
+in rim light, ready for the peel. Audio: quiet dawn kitchen, soft dough taps on wood, flour whisper.
+Emotional target: tenderness, craft, anticipation.
+
+V2 THE FIRE (first frame = K2): slow lateral arc left-to-right around the oven mouth at hearth level;
+the long wooden peel glides in and lays the margherita onto the stone floor; flames fold over the
+crust rim, leopard-spot char blooming in real time; embers swirl upward as the peel withdraws. Audio:
+deep fire crackle, stone hiss, peel scrape on brick. Emotional target: primal hunger, heat, awe.
+
+V3 THE FUSION (first frame = K3): overhead locked axis, slow descend and gentle rightward drift over
+the oak board; steam lifts off the leopard-spotted margherita; a hand enters and places paneer cubes,
+then cilantro sprigs beside torn basil; a slow spiral of saffron-tomato chutney drizzles across the
+melted cheese, glistening. Audio: crisp crust tick under the knife, soft sizzle, copper cup set down.
+Emotional target: fascination, appetite, the two-cultures moment.
+
+V4 THE TABLE (first frame = K4): pure dolly pull-back from close on the finished pie; steam curls off
+the paneer-basil fusion pizza; candles, glassware, brick glow resolve into the warm trattoria evening;
+camera settles centered above the board, "JAY'S PIZZA" menu card legible, symmetric hero frame. Audio:
+warm room ambience, candle flicker, one distant contented laugh. Emotional target: belonging, reward,
+"order now" pull.
+
+Duration note: generate 8s + extend-from-last-frame +2s = full 10s where the API allows; else ship 8s
+and let the scrub stretch it (41.7ms/frame cadence preserved). 240 frames extracted per 10s master at
+24fps (10s × 24fps = 240; the 420 figure was a slip — 420 would be 42fps) into both tiers (desktop q90
+<=1MB, mobile <=600KB).
 
 ## BUILD PIPELINE (state machine)
 1. ✅ Interview (answered: Cambridge KW, Indian-Italian fusion, Jay's Pizza, Neapolitan wood-fire craft)
-2. ⬜ Keyframes K1–K4 via connected Codex image engine → **APPROVAL GATE**
-3. ⬜ Veo 3.1: 4 videos (8s + extend→10s), first frame = approved keyframes → needs Google AI Studio key w/ billing
-4. ⬜ Frame extraction (ffmpeg, 16fps → /assets/seq-N/)
+2. ✅ Keyframes K1–K4 via connected Codex image engine (QC passed)
+3. ⬜ Veo 3.1 videos ×4 (VicSee MCP, first frame = approved keyframes) → needs VICSEE_API_KEY
+4. ⬜ Frame extraction (ffmpeg 24fps → 240/seq, PIL re-encode q90, desktop ≤1MB / mobile ≤600KB)
 5. ⬜ Site build (Codex CLI executes the master prompt above) → QA (web-visual-qa) → launch
