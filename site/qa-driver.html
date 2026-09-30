@@ -1,0 +1,51 @@
+<!DOCTYPE html><body style="margin:0;background:#111">
+<iframe id="ifr" src="qa-index.html" style="width:100%;height:100vh;border:0;display:block"></iframe>
+<div id="qa" style="position:fixed;bottom:8px;left:8px;z-index:99;color:#0f0;font:14px monospace;background:#000a;padding:4px 8px">WAIT</div>
+<script>
+const q = new URLSearchParams(location.search);
+const p = parseFloat(q.get('p') || '0.1');
+const ifr = document.getElementById('ifr');
+if (q.get('w')) { ifr.style.width = q.get('w') + 'px'; document.body.style.background = '#000'; }
+const qaEl = document.getElementById('qa');
+ifr.addEventListener('load', () => {
+  const t0 = Date.now();
+  const poll = setInterval(() => {
+    let st = null;
+    try { st = ifr.contentWindow.jaysPizza ? ifr.contentWindow.jaysPizza.getState() : null; } catch (e) {}
+    if (st && st.ready) {
+      clearInterval(poll);
+      const iwin = ifr.contentWindow, idoc = ifr.contentDocument;
+      const max = idoc.documentElement.scrollHeight - iwin.innerHeight;
+      const target = Math.round(max * p);
+      // Feed Lenis its native input: wheel deltas summing EXACTLY to target.
+      const WHEEL = 700;
+      const n = Math.ceil(target / WHEEL);
+      let i = 0;
+      const iv = setInterval(() => {
+        if (i >= n) { clearInterval(iv); return; }
+        const d = (i === n - 1) ? (target - i * WHEEL) : WHEEL;
+        iwin.dispatchEvent(new iwin.WheelEvent('wheel', { deltaY: d, bubbles: true, cancelable: true }));
+        i++;
+      }, 25);
+      // Wait until Lenis's animated scroll settles at target, then read state.
+      const settleStart = Date.now() + n * 25 + 4000;
+      const settle = setInterval(() => {
+        if (Date.now() < settleStart) return;
+        const y = iwin.scrollY;
+        if (Math.abs(y - target) < 120 || Date.now() - settleStart > 12000) {
+          clearInterval(settle);
+          setTimeout(() => {
+            let st2 = null;
+            try { st2 = iwin.jaysPizza.getState(); } catch (e) { st2 = 'ERR ' + e.message; }
+            qaEl.textContent = 'QA ' + JSON.stringify(st2) + ' y=' + Math.round(y) + '/' + target;
+            document.title = 'READY p=' + p;
+          }, 2500);
+        }
+      }, 500);
+    } else if (Date.now() - t0 > 120000) {
+      clearInterval(poll); qaEl.textContent = 'QATIMEOUT ' + JSON.stringify(st); document.title = 'QATIMEOUT';
+    }
+  }, 700);
+});
+</script>
+</body>

@@ -42,7 +42,7 @@ function touch(k){const img=cache.get(k);if(img){cache.delete(k);cache.set(k,img
 function trim(){while(cache.size>CAP){let victim=[...cache.keys()].find(k=>k!==key(active,target));if(!victim)break;cache.delete(victim)}}
 function load(s,f){const k=key(s,f);if(cache.has(k))return Promise.resolve(touch(k));if(failed.has(k))return Promise.resolve(null);if(pending.has(k))return pending.get(k);
 // Direct Image URLs work on file://, where fetch is blocked by browser local-file policies.
-const task=new Promise(resolve=>{const img=new Image();img.onload=async()=>{try{await img.decode()}catch{}cache.set(k,img);trim();resolve(img)};img.onerror=()=>{failed.add(k);resolve(null)};img.src=framePath(s,f)}).finally(()=>pending.delete(k));pending.set(k,task);return task}
+const task=new Promise(resolve=>{const img=new Image();img.decoding='async';img.onload=()=>{cache.set(k,img);trim();resolve(img)};img.onerror=()=>{failed.add(k);resolve(null)};img.src=framePath(s,f)}).finally(()=>pending.delete(k));pending.set(k,task);return task}
 async function batch(s,first=1,last=FRAMES,onBatch){for(let f=first;f<=last;f+=12){await Promise.all(Array.from({length:Math.min(12,last-f+1)},(_,i)=>load(s,f+i)));if(onBatch)onBatch(Math.min(last,f+11))}}
 function resize(){const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(innerWidth*dpr);canvas.height=Math.round(innerHeight*dpr);resized=true;if(ready)ScrollTrigger.refresh()}
 function cover(img){const scale=Math.max(canvas.width/img.naturalWidth,canvas.height/img.naturalHeight);const w=img.naturalWidth*scale,h=img.naturalHeight*scale;ctx.drawImage(img,(canvas.width-w)/2,(canvas.height-h)/2,w,h)}

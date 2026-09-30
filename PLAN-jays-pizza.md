@@ -116,10 +116,14 @@ dough visibly widens and breathes with each press and turn; ends on the rested d
 in rim light, ready for the peel. Audio: quiet dawn kitchen, soft dough taps on wood, flour whisper.
 Emotional target: tenderness, craft, anticipation.
 
-V2 THE FIRE (first frame = K2): slow lateral arc left-to-right around the oven mouth at hearth level;
-the long wooden peel glides in and lays the margherita onto the stone floor; flames fold over the
-crust rim, leopard-spot char blooming in real time; embers swirl upward as the peel withdraws. Audio:
-deep fire crackle, stone hiss, peel scrape on brick. Emotional target: primal hunger, heat, awe.
+V2 THE FIRE (first frame = K2): hearth-level single unbroken shot — the peel carrying the topped raw
+margherita enters and lays it on the stone oven floor; the dome's flames roll softly INSIDE the mouth,
+licking only the crust edges (fire stays in the oven — the pizza must never appear to catch fire);
+leopard-spot char blooms on the rim; the peel returns, slides under the perfectly blistered bubbling
+pie, lifts it OUT and lowers it onto the dark oak board where it rests steaming. Final frame = the
+pizza on the board → hands off directly into V3's overhead garnish scene on that same board. Audio:
+deep fire crackle, stone hiss, peel scrape. Emotional target: craft, mastery, appetite — heat without
+burning. (v2 regeneration 2026-09-30: V. rejected v1 take — pizza engulfed in flames.)
 
 V3 THE FUSION (first frame = K3): overhead locked axis, slow descend and gentle rightward drift over
 the oak board; steam lifts off the leopard-spotted margherita; a hand enters and places paneer cubes,
