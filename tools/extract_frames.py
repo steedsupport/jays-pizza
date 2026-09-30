@@ -11,7 +11,16 @@ ROOT = Path(__file__).resolve().parent.parent
 VIDEOS = ROOT / "videos"
 ASSETS = ROOT / "assets"
 FPS = 24
-TIERS = {"": (1600, 1_000_000, 90), "-m": (900, 600_000, 90)}  # suffix, max_width, max_bytes, q
+
+
+def src_width(vid: Path) -> int:
+    out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+                          "-show_entries", "stream=width", "-of", "csv=p=0", str(vid)],
+                         capture_output=True, text=True, check=True).stdout.strip()
+    return int(out)
+
+
+TIERS = {"": (None, 1_000_000, 90), "-m": (864, 600_000, 90)}  # suffix, max_width(None=src), max_bytes, q
 
 
 def encode_budget(img: Image.Image, q: int, max_bytes: int) -> bytes:
@@ -42,7 +51,9 @@ def main():
     report = []
     for vid in masters:
         n = vid.stem.split("-")[-1]  # e.g. seq-1 -> 1
+        srcw = src_width(vid)
         for suffix, (width, max_bytes, q0) in TIERS.items():
+            width = width or srcw
             outdir = ASSETS / f"seq-{n}{suffix}"
             outdir.mkdir(parents=True, exist_ok=True)
             for old in outdir.glob("*.jpg"):
