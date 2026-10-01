@@ -1,0 +1,30 @@
+{
+ "id": "e0fa2082-426c-4187-b292-552c246b3063",
+ "model": "suno-v5-generate-music",
+ "status": "completed",
+ "mediaType": "music",
+ "prompt": "Elegant modern Italian trattoria instrumental for a high-end wood-fired pizzeria. Warm fingerstyle acoustic guitar and mandolin lead melody over soft string quartet pads, gentle accordion swells, candlelit supperclub atmosphere. Subtle Indian fusion accents: distant sitar flourishes, soft tabla pulses, a low tanpura drone under the harmonies. Cinematic, refined, unhurried, romantic, 70 BPM. No vocals, no drums-heavy sections.",
+ "createdAt": "2026-10-01T00:37:51.718Z",
+ "resolvedParams": {},
+ "result": {
+  "songs": [
+   {
+    "audio_url": "https://tempfile.aiquickdraw.com/r/310ab389-4cc8-425c-aa26-391f1ca2a3e5.mp3",
+    "image_url": "https://musicfile.kie.ai/MzEwYWIzODktNGNjOC00MjVjLWFhMjYtMzkxZjFjYTJhM2U1.jpeg",
+    "duration": 218.8,
+    "title": "Tavolo Di Luna",
+    "tags": "Cinematic Italian folk fusion at 70 BPM with an unhurried brushed feel; verse bed in warm fingerstyle acoustic guitar and mandolin, chorus-like lifts from soft string quartet pads and gentle accordion swells, while subtle Indian accents add distant sitar flourishes, soft tabla pulses, and a low tanpura drone. Sections evolve from intimate guitar-and-drone opening to fuller strings, then a restrained centerpiece with mandolin lead. Airy legato, occasional reverse swells, and delicate room-reverb chimes. Wide, refined, candlelit, high-end supperclub mix., fingerstyle, gentle, drone, warm, refined, accordion, acoustic, soft, string quartet, romantic, low",
+    "prompt": "[Instrumental]"
+   },
+   {
+    "audio_url": "https://tempfile.aiquickdraw.com/r/9f2f9d2e-5329-46e0-85f9-c72eef8b22c7.mp3",
+    "image_url": "https://musicfile.kie.ai/OWYyZjlkMmUtNTMyOS00NmUwLTg1ZjktYzcyZWVmOGIyMmM3.jpeg",
+    "duration": 213,
+    "title": "Tavolo Di Luna",
+    "tags": "Cinematic Italian folk fusion at 70 BPM with an unhurried brushed feel; verse bed in warm fingerstyle acoustic guitar and mandolin, chorus-like lifts from soft string quartet pads and gentle accordion swells, while subtle Indian accents add distant sitar flourishes, soft tabla pulses, and a low tanpura drone. Sections evolve from intimate guitar-and-drone opening to fuller strings, then a restrained centerpiece with mandolin lead. Airy legato, occasional reverse swells, and delicate room-reverb chimes. Wide, refined, candlelit, high-end supperclub mix., fingerstyle, gentle, drone, warm, refined, accordion, acoustic, soft, string quartet, romantic, low",
+    "prompt": "[Instrumental]"
+   }
+  ]
+ },
+ "error": null
+}
